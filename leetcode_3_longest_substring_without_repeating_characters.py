@@ -1,4 +1,110 @@
 class Solution:
+
+# Approach 1.
+# Miscompilation 1:
+
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+
+        p = 0
+        q = 1
+
+        for p in range(len(s) - 1):
+            if s[p] == s[q] and q < len(s):
+                p += 1
+                q += 1
+            elif s[p] == s[q] and q == len(s):
+                return 1
+            elif s[p] != s[q] and q < len(s):
+                q += 1
+            else:
+                return q - p # The problem is that the pointers only check the endpoints. The characters in between are bypassed.
+        
+        return q - p
+
+# Miscompilation 2:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+
+        m = {}
+        i = 0
+        p = 0
+        q = 1
+        m[i] = s[p]
+
+        for p in range(len(s) - 1):
+            if q < len(s) - 1: # The condition truncates the upper evaluation bound (which is exactly len(s) - 1).
+                if s[q] in m: # Python's in operator on a dictionary evaluates strictly against 
+                              # memory addresses of the dictionary's keys, not its values. s[q] 
+                              # is a string character, while m's keys are integers (i), resulti
+                              # ng in a constant False evaluation.
+                              # if s[q] in m.values(): (Note: This forces an O(n) scan, destroy
+                              # ing dictionary efficiency. The true fix is changing the keys to
+                              #  characters).
+                    q += 1
+                else:
+                    i += 1
+                    q += 1
+                    m[i] = s[q]
+            else:
+                return len(m)
+        return len(m)
+
+# Miscompilation 3:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+
+        m = {}
+        i = 0
+        p = 0
+        q = 1
+        m[s[p]] = i
+
+        for p in range(len(s) - 1):
+            if q < len(s):
+                if s[q] in m:
+                    q += 1
+                else:
+                    i += 1
+                    m[s[q]] = i
+                    q += 1
+            else:
+                return len(m)
+        return len(m) # This (compilation) block functions as a global Unique Character Counter. 
+                      # It finds the "subsequence", which is explicitly avoided by the problem description.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def lengthOfLongestSubstring(self, s: str) -> int:
         char_set = set()
         left = 0
