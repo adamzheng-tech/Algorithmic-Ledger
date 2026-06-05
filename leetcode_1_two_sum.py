@@ -60,7 +60,87 @@ Strictly speaking, the `return []` is a **null-pointer safeguard**. In a product
 """
 
 # Approach 2: Hash Table (Two Passes).
+# Miscompilation 1:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}
 
+        left = 0
+        right = 0
+
+        for left in range(len(nums) - 1):
+            while right in range(len(nums) - 1): # The range(stop) function generates a sequence of integers that is exclusive of the stop value. It starts at 0 by default and stops right before it reaches the specified maximum.
+                complement = target - nums[right]
+                num_map[nums[right]] = right
+                
+                if complement in num_map and left < right:
+                    return [num_map[complement], right]
+                
+                right += 1
+        
+        return []  
+
+# Miscompilation 2:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}
+
+        left = 0
+        right = 0
+
+        for left in range(len(nums)):
+            while right in range(len(nums)): 
+                complement = target - nums[right]
+                for i, nums[right] in enumerate(nums):
+                    num_map[nums[right]] = i
+                
+                if complement in num_map and left < right:
+                    return [num_map[complement], right]
+                
+                right += 1
+        
+        return []  
+
+# Miscompilation 3:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}
+
+        left = 0
+        right = 0
+    
+        for i, num in enumerate(nums):
+            num_map[num] = i
+
+        for left in range(len(nums)):
+            
+            while right in range(len(nums)): 
+                complement = target - nums[right]
+                
+                if complement in num_map and left < right:
+                    return [num_map[complement], right]
+                
+                right += 1
+        
+        return []  
+
+# Revision 1:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}
+
+        left = 0
+        right = 0
+
+        for left in range(len(nums)):
+            while right in range(len(nums)):
+                complement = target - nums[right]
+                num_map[nums[right]] = right
+                
+                if complement in num_map and left < right:
+                    return [num_map[complement], right]
+                
+                right += 1
+        
+        return []  
+
+# Revision 2:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
         num_map = {}
 
