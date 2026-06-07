@@ -101,3 +101,25 @@ class Solution:
             if l2: l2 = l2.next
         
         return dummy.next 
+
+# Miscompilation 4:
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        if not l1 and not l2: # Brackets?
+            return []
+
+        dummy = ListNode(0)
+        carry = 0
+        
+        while l1 or l2 or carry > 0:
+            val1 = l1.val if l1 else 0
+            val2 = l2.val if l2 else 0
+            val_sum = val1 + val2 + carry
+            carry = val_sum // 10
+            new_node = ListNode(val_sum % 10)
+            dummy.next = new_node # Does it save the memory space for "current"? Yes. But it also causes a linked list overwrite.
+
+            if l1: l1 = l1.next
+            if l2: l2 = l2.next
+        
+        return dummy.next 
