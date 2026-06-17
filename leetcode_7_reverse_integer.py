@@ -120,3 +120,45 @@ class Solution:
 #               at the machine-code level. The assembly equivalent for x != 0 is JNZ and the assembly 
 #               equivalent for x > 0 is JG. JNZ checks the zero flag (ZF), while JG checks both the si
 #               gn (SF) and zero flags (ZF).
+
+# Miscompilation 1:
+class Solution:
+    def reverse(self, x: int) -> int:
+        sign = -1 if x <= 0 else 1
+        x = sign * x
+
+        reversed_x = 0
+
+        while x != 0:
+            digit = x % 10
+            if x // 10 - digit <= 2^31 - 1:
+                x = x // 10
+                reversed_x = 10 * reversed_x + digit
+        
+        return sign * reversed_x
+    
+    # Test case: x = 900000, output = time limit exceeded.
+    # Why?
+    #
+    # 0. 2 ^ 31 is an XOR calculation, not an exponentiation.
+    # 1. "if x // 10 - digit <= 2^31 - 1:" isn't an effective overflow check.
+    # 2. x //= 10 should execute unconditionally.    
+
+# Correction for it:
+class Solution:
+    def reverse(self, x: int) -> int:
+        sign = -1 if x < 0 else 1
+        x = sign * x
+
+        reversed_x = 0
+
+        while x != 0:
+            digit = x % 10
+            x //= 10
+
+            if reversed_x > (2**31 - 1 - digit) // 10:
+                return 0
+
+            reversed_x = 10 * reversed_x + digit
+
+        return sign * reversed_x
